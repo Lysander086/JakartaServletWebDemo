@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="form-demo" default="war" basedir=".">
+
+    <!-- ===== paths — edit TOMCAT_HOME if needed ===== -->
+    <property name="tomcat.home"   value="C:/Program Files/Apache Software Foundation/Tomcat 10.1"/>
+    <property name="src.dir"       value="src"/>
+    <property name="web.dir"       value="WebContent"/>
+    <property name="build.dir"     value="build"/>
+    <property name="classes.dir"   value="${build.dir}/classes"/>
+    <property name="dist.dir"      value="dist"/>
+    <property name="app.name"      value="form-demo"/>
+
+    <path id="compile.classpath">
+        <!-- Tomcat provides the Jakarta Servlet API at runtime -->
+        <fileset dir="${tomcat.home}/lib" includes="servlet-api.jar"/>
+        <!-- any extra jars you add to lib/ -->
+        <fileset dir="lib" includes="*.jar" erroronmissingdir="false"/>
+    </path>
+
+    <!-- ===== clean ===== -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <!-- ===== compile ===== -->
+    <target name="compile" depends="clean">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}"
+               destdir="${classes.dir}"
+               classpathref="compile.classpath"
+               source="21"
+               target="21"
+               encoding="UTF-8"
+               includeantruntime="false"/>
+    </target>
+
+    <!-- ===== package as WAR ===== -->
+    <target name="war" depends="compile">
+        <mkdir dir="${dist.dir}"/>
+        <war destfile="${dist.dir}/${app.name}.war" webxml="${web.dir}/WEB-INF/web.xml">
+            <!-- everything in WebContent except WEB-INF (war task adds it separately) -->
+            <fileset dir="${web.dir}" excludes="WEB-INF/**"/>
+            <webinf dir="${web.dir}/WEB-INF"/>
+            <lib dir="lib" erroronmissingdir="false"/>
+            <classes dir="${classes.dir}"/>
+        </war>
+        <echo>WAR ready: ${dist.dir}/${app.name}.war</echo>
+    </target>
+
+    <!-- ===== deploy: copy WAR to Tomcat webapps ===== -->
+    <target name="deploy" depends="war">
+        <copy file="${dist.dir}/${app.name}.war"
+              todir="${tomcat.home}/webapps"
+              overwrite="true"/>
+        <echo>Deployed to ${tomcat.home}/webapps</echo>
+    </target>
+
+</project>

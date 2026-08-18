@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+
+# Java / Ant build outputs
+build/
+dist/
+*.class
+*.war
+*.ear
+*.jar
+
+# Logs
+*.log
+
+# Environment / local overrides
+.env
+*.local
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# Tomcat runtime files (if created locally)
+logs/
+temp/
+work/
